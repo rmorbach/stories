@@ -19,12 +19,14 @@ final class StoriesView: UIView {
         case backwards, forward
     }
 
-    private var timer: Timer?
+    // time between stories
     private var timeout: TimeInterval
     
     private weak var delegate: StoriesViewDelegate?
     private let stories: StoriesTO
     private var currentIndex = 0
+    
+    private var animator: UIViewPropertyAnimator = .init()
     
     private lazy var uiProgressStack: UIStackView = {
         let stack = UIStackView()
@@ -117,22 +119,27 @@ final class StoriesView: UIView {
         
         progressView.setProgress(0.0, animated: false)
         
-        UIView.animate(withDuration: 5) {
-            progressView.setProgress(1.0)
-        }
+        animator.stopAnimation(false)
+        animator.finishAnimation(at: .current)
         
-        timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: false) { [weak self] currentTimer in
-            if currentTimer == self?.timer {
-                self?.navigate(to: .forward)
+        animator = UIViewPropertyAnimator(duration: timeout, curve: .easeInOut, animations: {
+            progressView.setProgress(1.0)
+        })
+        
+        animator.addCompletion { position in
+            switch position {
+            case .end:
+                self.navigate(to: .forward)
+            default: break
             }
         }
+        
+        animator.startAnimation()
         
     }
     
     private func updateContent(completion: @escaping(Bool)->Void) {
         guard currentIndex < stories.posts.count && currentIndex >= 0 else {
-            timer?.invalidate()
-            timer = nil
             completion(false)
             delegate?.didFinishPresentingStories()
             return
@@ -158,7 +165,7 @@ final class StoriesView: UIView {
         completion(true)
     }
     
-    private func navigate(to direction: Direction = .forward) {
+    private func navigate(to direction: Direction) {
         switch direction {
         case .forward:
             currentIndex += 1
@@ -174,13 +181,24 @@ final class StoriesView: UIView {
         }
     }
     
+    @objc func handleLongPress(gesture: UILongPressGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            animator.pauseAnimation()
+        case .ended:
+            animator.startAnimation()
+        default: break
+        }
+    }
+    
     @objc func handleTap(tap: UITapGestureRecognizer) {
         let location = tap.location(in: uiStoryImageView)
-        timer?.invalidate()
         if location.x > uiStoryImageView.bounds.width / 2 {
             // Forward
+            animator.stopAnimation(true)
             navigate(to: .forward)
-        } else {
+        } else {            
+            currentProgressView()?.setProgress(0.0, animated: false)
             navigate(to: .backwards)
         }
     }
@@ -260,6 +278,10 @@ extension StoriesView: CodeView {
         uiStoryImageView.isUserInteractionEnabled = true
         uiStoryImageView.addGestureRecognizer(tap)
         
+        let longpress = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gesture:)))
+        longpress.minimumPressDuration = 0.1
+        uiStoryImageView.addGestureRecognizer(longpress)
+                
         let userImageResource = ImageResource(downloadURL: stories.user.photoUrl)
         uiUserImageView.kf.setImage(with: userImageResource)
                 
