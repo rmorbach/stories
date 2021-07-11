@@ -1,0 +1,30 @@
+[
+    {
+        "user": {
+            "name": "Beautiful pics",
+            "photoUrl": "https://pixnio.com/free-images/2021/05/29/2021-05-29-09-10-23-900x1350.jpg"
+        },
+        "posts": [
+            {
+                "message": "Nice boat",
+                "photoUrl": "https://pixnio.com/free-images/2021/06/04/2021-06-04-10-17-06-1080x1350.jpg",
+                "datetime": 1625939952860
+            },
+            {
+                "message": "Car dashboard",
+                "photoUrl": "https://pixnio.com/free-images/2021/06/04/2021-06-04-10-18-38-1350x900.jpg",
+                "datetime": 1625939952860
+            },
+            {
+                "message": "Nice boat",
+                "photoUrl": "https://pixnio.com/free-images/2021/06/04/2021-06-04-10-17-06-1080x1350.jpg",
+                "datetime": 1625939952860
+            },
+            {
+                "message": "Car dashboard",
+                "photoUrl": "https://pixnio.com/free-images/2021/06/04/2021-06-04-10-18-38-1350x900.jpg",
+                "datetime": 1625939952860
+            }
+        ]
+    }
+]
