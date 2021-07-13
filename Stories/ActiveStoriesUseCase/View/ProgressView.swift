@@ -27,6 +27,11 @@ final class ProgressView: UIView {
     }
     
     func setProgress(_ progress: Float, animated: Bool = true) {
+        if animated == false {
+            self.uiProgressView.progress = progress
+            self.uiProgressView.layoutIfNeeded()
+            return 
+        }
         self.uiProgressView.setProgress(progress, animated: animated)
     }
     

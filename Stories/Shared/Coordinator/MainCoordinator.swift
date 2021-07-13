@@ -29,8 +29,8 @@ final class MainCoordinator: Coordinator {
         storiesRepository.fetchStories { state in
             switch state {
             case .failure(_):
-                break
                 // TODO
+                break
             case .success(let stories):
                 currentIndex = 0
                 self.fetchedStories = stories

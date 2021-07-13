@@ -20,6 +20,7 @@ final class FinishedStoriesCoordinator: Coordinator {
     func start() {
         let viewController = FinishedStoriesViewController()        
         navigationController.pushViewController(viewController, animated: true)
+        navigationController.viewControllers = [viewController]
     }
     
 }

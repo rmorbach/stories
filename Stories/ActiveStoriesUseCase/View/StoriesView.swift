@@ -102,7 +102,8 @@ final class StoriesView: UIView {
     }
     
     func currentProgressView() -> ProgressView? {
-        guard currentIndex < uiProgressStack.arrangedSubviews.count else {
+        guard currentIndex < uiProgressStack.arrangedSubviews.count,
+              currentIndex >= 0 else {
              return nil
         }
         guard let progressView = uiProgressStack.arrangedSubviews[currentIndex] as? ProgressView else {
@@ -119,7 +120,9 @@ final class StoriesView: UIView {
         
         progressView.setProgress(0.0, animated: false)
         
-        animator.stopAnimation(false)
+        if animator.isRunning {
+            animator.stopAnimation(false)
+        }
         animator.finishAnimation(at: .current)
         
         animator = UIViewPropertyAnimator(duration: timeout, curve: .easeInOut, animations: {
@@ -139,7 +142,14 @@ final class StoriesView: UIView {
     }
     
     private func updateContent(completion: @escaping(Bool)->Void) {
-        guard currentIndex < stories.posts.count && currentIndex >= 0 else {
+
+        // Navigate back throught all stories
+        guard currentIndex >= 0 else {
+            completion(false)
+            return
+        }
+        
+        guard currentIndex < stories.posts.count else {
             completion(false)
             delegate?.didFinishPresentingStories()
             return
@@ -154,15 +164,18 @@ final class StoriesView: UIView {
         
         uiMessageLabel.text = post.message
         
-        let placeholder = KFCrossPlatformImage()
-        placeholder.add(to: uiStoryImageView)
+        uiStoryImageView.kf.indicatorType = .activity
         uiStoryImageView.startAnimating()
         
-        uiStoryImageView.kf.setImage(with: resource, options: nil) { [weak self] result, error in
-            self?.uiStoryImageView.stopAnimating()
+        uiStoryImageView.kf.setImage(with: resource, placeholder: nil, options: nil) { result in
+            switch result {
+            case .success(let image):
+                self.uiStoryImageView.image = image.image
+            default: break
+            }
+            completion(true)
         }
                 
-        completion(true)
     }
     
     private func navigate(to direction: Direction) {
@@ -172,6 +185,11 @@ final class StoriesView: UIView {
         case .backwards:
             currentIndex -= 1
         }
+        
+        if currentIndex < 0 {
+            currentIndex = 0
+        }
+        
         updateContent { valid in
             DispatchQueue.main.async {
                 if valid {
@@ -193,9 +211,9 @@ final class StoriesView: UIView {
     
     @objc func handleTap(tap: UITapGestureRecognizer) {
         let location = tap.location(in: uiStoryImageView)
+        animator.stopAnimation(false)
         if location.x > uiStoryImageView.bounds.width / 2 {
             // Forward
-            animator.stopAnimation(true)
             navigate(to: .forward)
         } else {            
             currentProgressView()?.setProgress(0.0, animated: false)
