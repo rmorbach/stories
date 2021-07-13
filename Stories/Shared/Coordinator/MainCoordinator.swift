@@ -13,8 +13,8 @@ final class MainCoordinator: Coordinator {
     
     private let navigationController: UINavigationController
     private let storiesRepository: IStoriesRepository
-    private var fetchedStories: [StoriesTO] = []
-    private var currentIndex: Int = 0
+    private var fetchedStories: StoriesLinkedList?
+    private var currentStories: StoriesNode?
     
     init(withNavigationController
             navigationController: UINavigationController,
@@ -32,18 +32,22 @@ final class MainCoordinator: Coordinator {
                 // TODO
                 break
             case .success(let stories):
-                currentIndex = 0
                 self.fetchedStories = stories
+                self.currentStories = self.fetchedStories?.first
                 DispatchQueue.main.async {
-                    self.showStories(index: 0)
+                    self.showStories()
                 }
             }
         }
         
     }
     
-    private func showStories(index: Int) {
-        let viewController = StoriesViewController(withStories: fetchedStories[index],
+    private func showStories() {
+        guard let node = currentStories else {
+            return
+        }
+        
+        let viewController = StoriesViewController(withStories: node.value,
                                                    delegate: self)
         navigationController.pushViewController(viewController, animated: true)
     }
@@ -52,16 +56,17 @@ final class MainCoordinator: Coordinator {
 
 extension MainCoordinator: StoriesViewControllerDelegate {
     func didFinishPresentingStories() {
-        currentIndex += 1
-        if currentIndex < fetchedStories.count {
-            showStories(index: currentIndex)
+        guard let node = currentStories?.next else {
+            // No more stories to show
+            let coordinator = FinishedStoriesCoordinator(withNavigationController: self.navigationController)
+            children.append(coordinator)
+            coordinator.start()
             return
         }
         
-        let coordinator = FinishedStoriesCoordinator(withNavigationController: self.navigationController)
-        children.append(coordinator)
-        coordinator.start()
-        
+        currentStories = node
+        showStories()
+                        
     }
     func didFailPresenting(url: URL) {
         
