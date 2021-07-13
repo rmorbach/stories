@@ -24,6 +24,7 @@
 		5E0AE04C269A54A300DB2A61 /* FinishedStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0AE04B269A54A300DB2A61 /* FinishedStoriesView.swift */; };
 		5E0AE050269A559000DB2A61 /* FinishedStoriesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0AE04F269A559000DB2A61 /* FinishedStoriesCoordinator.swift */; };
 		5EA68B8D269B40C9004BD59B /* ActiveStories.json in Resources */ = {isa = PBXBuildFile; fileRef = 5EA68B8C269B40C9004BD59B /* ActiveStories.json */; };
+		5EE8D2FD269D1F2900DECA6F /* StoriesLinkedListFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE8D2FC269D1F2900DECA6F /* StoriesLinkedListFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 		5E0AE04B269A54A300DB2A61 /* FinishedStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedStoriesView.swift; sourceTree = "<group>"; };
 		5E0AE04F269A559000DB2A61 /* FinishedStoriesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedStoriesCoordinator.swift; sourceTree = "<group>"; };
 		5EA68B8C269B40C9004BD59B /* ActiveStories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ActiveStories.json; sourceTree = "<group>"; };
+		5EE8D2FC269D1F2900DECA6F /* StoriesLinkedListFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesLinkedListFactory.swift; sourceTree = "<group>"; };
 		9DCD211D02E219AE7BD0D46A /* Pods-Stories.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stories.release.xcconfig"; path = "Target Support Files/Pods-Stories/Pods-Stories.release.xcconfig"; sourceTree = "<group>"; };
 		D09EFEC79136304FB45E9387 /* Pods_Stories.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Stories.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -115,6 +117,7 @@
 		5E0AE01F269A0D2500DB2A61 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				5EE8D2FB269D1F1200DECA6F /* Factories */,
 				5E0AE037269A4DA700DB2A61 /* Coordinator */,
 				5E0AE01A269A0C6D00DB2A61 /* Entities */,
 				5E0AE020269A0D2D00DB2A61 /* View */,
@@ -223,6 +226,14 @@
 			children = (
 			);
 			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		5EE8D2FB269D1F1200DECA6F /* Factories */ = {
+			isa = PBXGroup;
+			children = (
+				5EE8D2FC269D1F2900DECA6F /* StoriesLinkedListFactory.swift */,
+			);
+			path = Factories;
 			sourceTree = "<group>";
 		};
 		68DB61210C5529D1267B11D8 /* Frameworks */ = {
@@ -354,6 +365,7 @@
 				5E0AE048269A549600DB2A61 /* FinishedStoriesViewController.swift in Sources */,
 				5E0AE006269A0C5000DB2A61 /* AppDelegate.swift in Sources */,
 				5E0AE035269A236200DB2A61 /* ProgressView.swift in Sources */,
+				5EE8D2FD269D1F2900DECA6F /* StoriesLinkedListFactory.swift in Sources */,
 				5E0AE022269A0D3400DB2A61 /* CodeView.swift in Sources */,
 				5E0AE03C269A4DBD00DB2A61 /* MainCoordinator.swift in Sources */,
 				5E0AE050269A559000DB2A61 /* FinishedStoriesCoordinator.swift in Sources */,

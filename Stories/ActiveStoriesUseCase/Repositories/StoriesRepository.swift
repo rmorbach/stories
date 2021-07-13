@@ -13,12 +13,12 @@ enum FetchStoriesError: Error {
 }
 
 protocol IStoriesRepository {
-    func fetchStories(completion: (Result<[StoriesTO], FetchStoriesError>) ->())
+    func fetchStories(completion: (Result<StoriesLinkedList, FetchStoriesError>) ->())
 }
 
 final class StoriesRepository: IStoriesRepository {
     
-    func fetchStories(completion: (Result<[StoriesTO], FetchStoriesError>) -> ()) {
+    func fetchStories(completion: (Result<StoriesLinkedList, FetchStoriesError>) -> ()) {
         completion(.failure(.unimplemented))
     }
     
@@ -28,7 +28,7 @@ struct StoriesRepositoryMock: IStoriesRepository {
     
     private let kStoriesFileName = "ActiveStories"
     
-    func fetchStories(completion: (Result<[StoriesTO], FetchStoriesError>) -> ()) {
+    func fetchStories(completion: (Result<StoriesLinkedList, FetchStoriesError>) -> ()) {
         guard let mockUrl = Bundle.main.url(forResource: kStoriesFileName, withExtension: "json") else {
             completion(.failure(.unknown))
             return
@@ -36,7 +36,8 @@ struct StoriesRepositoryMock: IStoriesRepository {
         do {
             let data = try Data(contentsOf: mockUrl)
             let stories = try JSONDecoder().decode([ImageStoriesTO].self, from: data)
-            completion(.success(stories))
+            let list = StoriesLinkedListFactory.createLinkedList(from: stories)
+            completion(.success(list))
         } catch {
             completion(.failure(.unknown))
         }
