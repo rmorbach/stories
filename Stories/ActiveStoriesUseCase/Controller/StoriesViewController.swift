@@ -25,7 +25,8 @@ final class StoriesViewController: UIViewController {
     }
     
     override func loadView() {
-        view = StoriesView(stories: self.stories, delegate: self)
+        let viewModel = StoryViewModel(withStory: stories)
+        view = StoriesView(delegate: self, viewModel: viewModel)
     }
     
     override func viewDidLoad() {

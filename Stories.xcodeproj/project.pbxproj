@@ -23,6 +23,7 @@
 		5E0AE048269A549600DB2A61 /* FinishedStoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0AE047269A549600DB2A61 /* FinishedStoriesViewController.swift */; };
 		5E0AE04C269A54A300DB2A61 /* FinishedStoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0AE04B269A54A300DB2A61 /* FinishedStoriesView.swift */; };
 		5E0AE050269A559000DB2A61 /* FinishedStoriesCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0AE04F269A559000DB2A61 /* FinishedStoriesCoordinator.swift */; };
+		5E89B65226A64E25005A28F1 /* StoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E89B65126A64E25005A28F1 /* StoryViewModel.swift */; };
 		5EA68B8D269B40C9004BD59B /* ActiveStories.json in Resources */ = {isa = PBXBuildFile; fileRef = 5EA68B8C269B40C9004BD59B /* ActiveStories.json */; };
 		5EE8D2FD269D1F2900DECA6F /* StoriesLinkedListFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE8D2FC269D1F2900DECA6F /* StoriesLinkedListFactory.swift */; };
 /* End PBXBuildFile section */
@@ -46,6 +47,7 @@
 		5E0AE047269A549600DB2A61 /* FinishedStoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedStoriesViewController.swift; sourceTree = "<group>"; };
 		5E0AE04B269A54A300DB2A61 /* FinishedStoriesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedStoriesView.swift; sourceTree = "<group>"; };
 		5E0AE04F269A559000DB2A61 /* FinishedStoriesCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinishedStoriesCoordinator.swift; sourceTree = "<group>"; };
+		5E89B65126A64E25005A28F1 /* StoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoryViewModel.swift; sourceTree = "<group>"; };
 		5EA68B8C269B40C9004BD59B /* ActiveStories.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ActiveStories.json; sourceTree = "<group>"; };
 		5EE8D2FC269D1F2900DECA6F /* StoriesLinkedListFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoriesLinkedListFactory.swift; sourceTree = "<group>"; };
 		9DCD211D02E219AE7BD0D46A /* Pods-Stories.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Stories.release.xcconfig"; path = "Target Support Files/Pods-Stories/Pods-Stories.release.xcconfig"; sourceTree = "<group>"; };
@@ -170,7 +172,7 @@
 		5E0AE042269A544B00DB2A61 /* ActiveStoriesUseCase */ = {
 			isa = PBXGroup;
 			children = (
-				5EA68B90269B9FAD004BD59B /* ViewModel */,
+				5E89B65026A64E0A005A28F1 /* ViewModels */,
 				5EA68B8B269B40B8004BD59B /* Resources */,
 				5E0AE027269A152F00DB2A61 /* View */,
 				5E0AE025269A151500DB2A61 /* Controller */,
@@ -213,19 +215,20 @@
 			path = Coordinator;
 			sourceTree = "<group>";
 		};
+		5E89B65026A64E0A005A28F1 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				5E89B65126A64E25005A28F1 /* StoryViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		5EA68B8B269B40B8004BD59B /* Resources */ = {
 			isa = PBXGroup;
 			children = (
 				5EA68B8C269B40C9004BD59B /* ActiveStories.json */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		5EA68B90269B9FAD004BD59B /* ViewModel */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		5EE8D2FB269D1F1200DECA6F /* Factories */ = {
@@ -361,6 +364,7 @@
 				5E0AE039269A4DB400DB2A61 /* Coordinator.swift in Sources */,
 				5E0AE00A269A0C5000DB2A61 /* StoriesViewController.swift in Sources */,
 				5E0AE01C269A0C7800DB2A61 /* Stories.swift in Sources */,
+				5E89B65226A64E25005A28F1 /* StoryViewModel.swift in Sources */,
 				5E0AE029269A153B00DB2A61 /* StoriesView.swift in Sources */,
 				5E0AE048269A549600DB2A61 /* FinishedStoriesViewController.swift in Sources */,
 				5E0AE006269A0C5000DB2A61 /* AppDelegate.swift in Sources */,

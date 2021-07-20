@@ -14,23 +14,17 @@ protocol StoriesViewDelegate: AnyObject {
 }
 
 final class StoriesView: UIView {
-    
-    enum Direction {
-        case backwards, forward
-    }
 
     // time between stories
     private var timeout: TimeInterval
     
     private weak var delegate: StoriesViewDelegate?
-    private let stories: StoriesTO
-    private var currentIndex = 0
-    
+
     private var animator: UIViewPropertyAnimator = .init()
     
     private lazy var uiProgressStack: UIStackView = {
         let stack = UIStackView()
-        stack.spacing = 10
+        stack.spacing = 5
         stack.axis = .horizontal
         stack.distribution = .fillEqually
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -87,12 +81,14 @@ final class StoriesView: UIView {
         return label
     }()
     
-    init(stories: StoriesTO,
-         delegate: StoriesViewDelegate?,
-         timeout: TimeInterval = 5) {
-        self.stories = stories
+    private let viewModel: StoryViewModel
+    
+    init(delegate: StoriesViewDelegate?,
+         timeout: TimeInterval = 5,
+         viewModel: StoryViewModel) {
         self.delegate = delegate
         self.timeout = timeout
+        self.viewModel = viewModel
         super.init(frame: .zero)
         setup()
     }
@@ -102,11 +98,11 @@ final class StoriesView: UIView {
     }
     
     func currentProgressView() -> ProgressView? {
-        guard currentIndex < uiProgressStack.arrangedSubviews.count,
-              currentIndex >= 0 else {
+        guard viewModel.currentIndex < uiProgressStack.arrangedSubviews.count,
+              viewModel.currentIndex >= 0 else {
              return nil
         }
-        guard let progressView = uiProgressStack.arrangedSubviews[currentIndex] as? ProgressView else {
+        guard let progressView = uiProgressStack.arrangedSubviews[viewModel.currentIndex] as? ProgressView else {
             return nil
         }
         return progressView
@@ -114,19 +110,16 @@ final class StoriesView: UIView {
     
     func start() {
         
-        guard let progressView = currentProgressView() else {
-            return
-        }
-        
-        progressView.setProgress(0.0, animated: false)
-        
+        resetCurrentProgressView()
+        let progressView = currentProgressView()
+         
         if animator.isRunning {
             animator.stopAnimation(false)
         }
         animator.finishAnimation(at: .current)
         
         animator = UIViewPropertyAnimator(duration: timeout, curve: .easeInOut, animations: {
-            progressView.setProgress(1.0)
+            progressView?.setProgress(1.0)
         })
         
         animator.addCompletion { position in
@@ -138,31 +131,30 @@ final class StoriesView: UIView {
         }
         
         animator.startAnimation()
-        
+    }
+    
+    private func resetCurrentProgressView() {
+        currentProgressView()?.setProgress(0.0, animated: false)
     }
     
     private func updateContent(completion: @escaping(Bool)->Void) {
 
         // Navigate back throught all stories
-        guard currentIndex >= 0 else {
+        guard viewModel.currentIndex >= 0 else {
             completion(false)
             return
         }
         
-        guard currentIndex < stories.posts.count else {
+        guard let post = viewModel.post(at: viewModel.currentIndex) else {
             completion(false)
             delegate?.didFinishPresentingStories()
             return
         }
-        let post = stories.posts[currentIndex]
-        let resource = ImageResource(downloadURL: post.photoUrl)
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM/yyyy HH:mm:ss"
-        let date = Date(timeIntervalSince1970: post.datetime / 1000)
         
-        uiDatetimeLabel.text = formatter.string(from: date)
-        
-        uiMessageLabel.text = post.message
+        let resource = ImageResource(downloadURL: viewModel.url(forPost: post))
+                
+        uiDatetimeLabel.text = viewModel.dateTime(forPost: post)
+        uiMessageLabel.text = viewModel.message(forPost: post)
         
         uiStoryImageView.kf.indicatorType = .activity
         uiStoryImageView.startAnimating()
@@ -178,23 +170,15 @@ final class StoriesView: UIView {
                 
     }
     
-    private func navigate(to direction: Direction) {
-        switch direction {
-        case .forward:
-            currentIndex += 1
-        case .backwards:
-            currentIndex -= 1
-        }
-        
-        if currentIndex < 0 {
-            currentIndex = 0
-        }
+    private func navigate(to direction: StoryViewModel.Direction) {
+        viewModel.navigate(to: direction)
         
         updateContent { valid in
             DispatchQueue.main.async {
                 if valid {
                     self.start()
                 }
+                // TODO
             }
         }
     }
@@ -216,7 +200,7 @@ final class StoriesView: UIView {
             // Forward
             navigate(to: .forward)
         } else {            
-            currentProgressView()?.setProgress(0.0, animated: false)
+            resetCurrentProgressView()
             navigate(to: .backwards)
         }
     }
@@ -267,7 +251,7 @@ extension StoriesView: CodeView {
         uiUserDataStack.addArrangedSubview(uiUserImageView)
         uiUserDataStack.addArrangedSubview(userTextStackView)
         
-        stories.posts.forEach { _ in
+        viewModel.posts.forEach { _ in
             let view = ProgressView()
             view.translatesAutoresizingMaskIntoConstraints = false
             view.heightAnchor.constraint(equalToConstant: 5.0).isActive = true
@@ -287,10 +271,7 @@ extension StoriesView: CodeView {
     
     func setupExtraConfigurations() {
         backgroundColor = .black
-        uiUsernameLabel.text = stories.user.name
-        guard stories.posts.isEmpty == false else { return }
-        currentIndex = -1
-        navigate(to: .forward)
+        uiUsernameLabel.text = viewModel.userName
         
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(tap:)))
         uiStoryImageView.isUserInteractionEnabled = true
@@ -300,8 +281,11 @@ extension StoriesView: CodeView {
         longpress.minimumPressDuration = 0.1
         uiStoryImageView.addGestureRecognizer(longpress)
                 
-        let userImageResource = ImageResource(downloadURL: stories.user.photoUrl)
+        let userImageResource = ImageResource(downloadURL: viewModel.userPhoto)
         uiUserImageView.kf.setImage(with: userImageResource)
+                
+        guard viewModel.posts.isEmpty == false else { return }
+        navigate(to: .forward)
                 
     }
 }
