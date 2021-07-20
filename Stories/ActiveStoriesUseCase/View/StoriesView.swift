@@ -81,11 +81,11 @@ final class StoriesView: UIView {
         return label
     }()
     
-    private let viewModel: StoryViewModel
+    private let viewModel: StoryViewModelProtocol
     
     init(delegate: StoriesViewDelegate?,
          timeout: TimeInterval = 5,
-         viewModel: StoryViewModel) {
+         viewModel: StoryViewModelProtocol) {
         self.delegate = delegate
         self.timeout = timeout
         self.viewModel = viewModel
@@ -125,7 +125,7 @@ final class StoriesView: UIView {
         animator.addCompletion { position in
             switch position {
             case .end:
-                self.navigate(to: .forward)
+                self.navigate(to: Direction.forward)
             default: break
             }
         }
@@ -170,7 +170,7 @@ final class StoriesView: UIView {
                 
     }
     
-    private func navigate(to direction: StoryViewModel.Direction) {
+    private func navigate(to direction: Direction) {
         viewModel.navigate(to: direction)
         
         updateContent { valid in
@@ -198,10 +198,10 @@ final class StoriesView: UIView {
         animator.stopAnimation(false)
         if location.x > uiStoryImageView.bounds.width / 2 {
             // Forward
-            navigate(to: .forward)
+            navigate(to: Direction.forward)
         } else {            
             resetCurrentProgressView()
-            navigate(to: .backwards)
+            navigate(to: Direction.backwards)
         }
     }
     

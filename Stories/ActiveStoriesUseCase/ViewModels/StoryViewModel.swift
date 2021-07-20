@@ -7,12 +7,27 @@
 
 import Foundation
 
-class StoryViewModel {
-        
-    enum Direction {
-        case backwards, forward
-    }
+enum Direction {
+    case backwards, forward
+}
+
+protocol StoryViewModelProtocol {
+    var story: StoriesTO { get }
+    var currentIndex: Int { get }
+    var posts: [Post] { get }
+    var userName: String { get }
+    var userPhoto: URL { get }
     
+    func post(at index: Int) -> Post?
+    func dateTime(forPost post: Post) -> String
+    func message(forPost post: Post) -> String
+    func url(forPost post: Post) -> URL
+    func navigate(to direction: Direction)
+}
+
+
+final class StoryViewModel: StoryViewModelProtocol {
+
     let story: StoriesTO
     private(set) var currentIndex: Int = -1
     
